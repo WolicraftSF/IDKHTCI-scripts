@@ -9,12 +9,12 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #note: printf is like echo -e but without the \n
-printf "${GREEN}[*] ${NC}Select a directory to download the installer [default: $HOME/]: "; read -e targetDir
+printf "${GREEN}[*] ${NC}Select a directory to download the installer [default: $HOME/]: "; read -e targetDir </dev/tty
 if [[ "$targetDir" == "" ]]; then
     while true
     do
         printf "${RED}[!] ${NC}Use default directory? \a"
-        printf "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead
+        printf "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead </dev/tty
 
         if [[ "$choiceRead" == [yY] || "$choiceRead" == [yY][eE][sS] ]]; then
             targetDir=$HOME
@@ -51,7 +51,7 @@ echo -e "${GREEN}[*] Install Successful!"
 echo -e "${RED}[!] ${NC}Do you want to remove the installer? (Installation will be kept)\a"
 while true
 do
-    printf "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead
+    printf "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead </dev/tty
     if [[ "$choiceRead" == [yY] || "$choiceRead" == [yY][eE][sS] ]]; then
         echo -e "${RED}[!] ${BLUE}Removing installer files..."
         rm -r "acer-predator-turbo-and-rgb-keyboard-linux-module"
