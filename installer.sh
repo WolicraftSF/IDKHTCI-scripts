@@ -8,36 +8,49 @@ NC='\033[0m' # No Color
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#note: printf is like echo -e but without the \n
-printf "${GREEN}[*] ${NC}Select a directory to download the installer [default: $HOME/]: "; read -e targetDir </dev/tty
-if [[ "$targetDir" == "" ]]; then
+#checking dependencies
+#which realpath ; echo $?
+
+#3 args, question text and the yes and no commands
+yesno()
+{
     while true
     do
-        printf "${RED}[!] ${NC}Use default directory? \a"
+        printf "$(eval "echo $1") \a"
         printf "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead </dev/tty
 
         if [[ "$choiceRead" == [yY] || "$choiceRead" == [yY][eE][sS] ]]; then
-            targetDir=$HOME
+            eval $2
             break
         elif [[ "$choiceRead" == [nN] || "$choiceRead" == [nN][oO] ]]; then
-            echo -e "${RED}[!] Aborted\a"
-            exit
+            eval $3
+            break
         else
             echo -e "${RED}[!] Invalid Option\a"
         fi
     done
-fi
+}
 
-targetDir="${targetDir/#\~/$HOME}"
+#note: printf is like echo -e but without the \n
+printf "${GREEN}[*] ${NC}Select a directory to download the installer [default: $HOME/]: "; read -e targetDir </dev/tty
+if [[ "$targetDir" == "" ]]; then
+    yesno '${RED}[!] ${NC}Use default directory?' 'targetDir=$HOME' 'echo -e "${RED}[!] Aborted\a"; exit'
+fi
+exit
+
+targetDir="$(eval echo $targetDir)"
 targetDir=$(realpath -Ls "$targetDir")
 if [ ! -d $targetDir ]; then
-    echo -e "${RED}[!] $targetDir is not a directory\a"
+    echo -e "${RED}[!] $targetDir is not a directory \a"
     exit
 fi
 echo -e "${GREEN}[*] ${NC}Using ${BLUE}"$targetDir"${NC} for the download"
-
-echo -e "${GREEN}[*] ${BLUE}Cloning repository..."
 cd $targetDir
+
+echo -e "${GREEN}[*] ${BLUE}Downloading ${}..."
+
+curl -sL https://raw.githubusercontent.com/WolicraftSF/IDKHTCI-scripts/refs/heads/main/install_acer-rgb.sh | bash
+
 git clone https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module.git
 
 echo -e "${GREEN}[*] ${BLUE}Installing..."
