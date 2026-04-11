@@ -1,5 +1,23 @@
 #!/bin/bash
 
+if [[ $EUID -eq 0 ]]; then
+   echo "Running as root is not supported" 
+   exit 1
+fi
+
+if [ $# -gt 1 ]; then
+    echo "Error: too many arguments."
+    exit 1
+fi
+installOption=$1
+
+installersLocation="[url]"
+
+if [ $(curl -fsSL "${installersLocation}/${installOption}.sh" > /dev/null; echo $?) -ne 0 ]; then
+    echo -e "${RED}[!] Invalid URL\a"
+    exit 1
+fi
+
 #color codes for formatting
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -14,16 +32,21 @@ normal=$(tput sgr0)
 #3 args, question text and the yes and no commands
 yesno()
 {
+    local question=$1
+    local yesCommands=$2
+    local noCommands=$3
     while true
     do
-        printf "$(eval "echo $1") \a"
-        printf "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead </dev/tty
+        echo -en "$(eval "echo $question") \a"
+        echo -en "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead </dev/tty
 
         if [[ "$choiceRead" == [yY] || "$choiceRead" == [yY][eE][sS] ]]; then
-            eval $2
+            eval $yesCommands
+            yesnoResult=1
             break
         elif [[ "$choiceRead" == [nN] || "$choiceRead" == [nN][oO] ]]; then
-            eval $3
+            eval $noCommands
+            yesnoResult=0
             break
         else
             echo -e "${RED}[!] Invalid Option\a"
@@ -31,10 +54,11 @@ yesno()
     done
 }
 
-#note: printf is like echo -e but without the \n
-printf "${GREEN}[*] ${NC}Select a directory to download the installer [default: $HOME/]: "; read -e targetDir </dev/tty
+echo -en "${GREEN}[*] ${NC}Select a directory to download the installer. A folder inside it will be created. [default: $HOME/]: "; read -e targetDir </dev/tty
 if [[ "$targetDir" == "" ]]; then
-    yesno '${RED}[!] ${NC}Use default directory?' 'targetDir=$HOME' 'echo -e "${RED}[!] Aborted\a"; exit'
+    yesno '${RED}[!] ${NC}Use default directory?' \
+    'targetDir=$HOME/' \
+    'echo -e "${RED}[!] Aborted\a"; exit'
 fi
 exit
 
@@ -44,36 +68,27 @@ if [ ! -d $targetDir ]; then
     echo -e "${RED}[!] $targetDir is not a directory \a"
     exit
 fi
+
 echo -e "${GREEN}[*] ${NC}Using ${BLUE}"$targetDir"${NC} for the download"
+targetDir=$targetDir/IDKHTCI-dl
+mkdir $targetDir
 cd $targetDir
 
+source <(curl -fsSL "${installersLocation}/${installOption}.sh")
+
 echo -e "${GREEN}[*] ${BLUE}Downloading ${}..."
-
-curl -sL https://raw.githubusercontent.com/WolicraftSF/IDKHTCI-scripts/refs/heads/main/install_acer-rgb.sh | bash
-
-git clone https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module.git
+downloadInstructions
 
 echo -e "${GREEN}[*] ${BLUE}Installing..."
-cd "acer-predator-turbo-and-rgb-keyboard-linux-module"
-chmod +x ./*.sh
-sudo ./install_service.sh
+installInstructions
 
 cd $targetDir
 echo -e "${GREEN}[*] Install Successful!"
 
-echo -e "${RED}[!] ${NC}Do you want to remove the installer? (Installation will be kept)\a"
-while true
-do
-    printf "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead </dev/tty
-    if [[ "$choiceRead" == [yY] || "$choiceRead" == [yY][eE][sS] ]]; then
-        echo -e "${RED}[!] ${BLUE}Removing installer files..."
-        rm -r "acer-predator-turbo-and-rgb-keyboard-linux-module"
-        break
-    elif [[ "$choiceRead" == [nN] || "$choiceRead" == [nN][oO] ]]; then
-        break
-    else
-        echo -e "${RED}[!] Invalid Option\a"
-    fi
-done
+aditionalInstructions
+
+yesno '${RED}[!] ${NC}Do you want to remove the installer? (Installation will be kept)' \
+'echo -e "${RED}[!] ${BLUE}Removing installer files..."; rm -r ${targetDir}' \
+''
 
 echo -e "${GREEN}[*] Done!"
