@@ -11,7 +11,7 @@ if [ $# -gt 1 ]; then
 fi
 installOption=$1
 
-installersLocation="https://raw.githubusercontent.com/WolicraftSF/IDKHTCI-scripts/refs/heads/main/"
+installersLocation="https://raw.githubusercontent.com/WolicraftSF/IDKHTCI-scripts/refs/heads/main/installers/"
 
 if [ $(curl -fsSL "${installersLocation}/${installOption}.sh" > /dev/null; echo $?) -ne 0 ]; then
     echo -e "${RED}[!] Invalid URL\a"
