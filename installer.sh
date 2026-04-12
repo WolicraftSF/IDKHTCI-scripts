@@ -32,13 +32,13 @@ normal=$(tput sgr0)
 #3 args, question text and the yes and no commands
 yesno()
 {
-    local question=$1
-    local yesCommands=$2
-    local noCommands=$3
+    local question="$1"
+    local yesCommands="$2"
+    local noCommands="$3"
     while true
     do
         echo -en "$(eval "echo $question") \a"
-        echo -en "${bold}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead </dev/tty
+        echo -en "${NC}[${GREEN}Y${NC}/${RED}n${NC}] "; read choiceRead </dev/tty
 
         if [[ "$choiceRead" == [yY] || "$choiceRead" == [yY][eE][sS] ]]; then
             eval $yesCommands
@@ -60,7 +60,6 @@ if [[ "$targetDir" == "" ]]; then
     'targetDir=$HOME/' \
     'echo -e "${RED}[!] Aborted\a"; exit'
 fi
-exit
 
 targetDir="$(eval echo $targetDir)"
 targetDir=$(realpath -Ls "$targetDir")
@@ -76,10 +75,10 @@ cd $targetDir
 
 source <(curl -fsSL "${installersLocation}/${installOption}.sh")
 
-echo -e "${GREEN}[*] ${BLUE}Downloading ${}..."
+echo -e "${GREEN}[*] ${BLUE}Downloading ${installOption}..."
 downloadInstructions
 
-echo -e "${GREEN}[*] ${BLUE}Installing..."
+echo -e "${GREEN}[*] ${BLUE}Installing ${installOption}..."
 installInstructions
 
 cd $targetDir
@@ -87,8 +86,8 @@ echo -e "${GREEN}[*] Install Successful!"
 
 aditionalInstructions
 
-yesno '${RED}[!] ${NC}Do you want to remove the installer? (Installation will be kept)' \
-'echo -e "${RED}[!] ${BLUE}Removing installer files..."; rm -r ${targetDir}' \
+yesno '${RED}[!] ${NC}Do you want to remove the installer? \(Installation will be kept\)' \
+'echo -e "${RED}[!] ${BLUE}Removing installer files..."; rm -rf ${targetDir}' \
 ''
 
 echo -e "${GREEN}[*] Done!"

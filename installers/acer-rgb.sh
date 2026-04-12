@@ -15,10 +15,11 @@ aditionalInstructions()
 {
     aditionalOptions=3
     echo -e "${BLUE} [ADITIONAL TWEAKS]"
-    for i in $(eval echo {1..$aditionalOptions})
+    for i in $(eval echo "{1..$aditionalOptions}")
     do
         case $i in
             1)
+                echo "yesno"
                 yesno '${BLUE}[&] ${NC}Make command "facer-rgb" available outside its directory? ${RED}[SUDO REQUIRED]' \
                 'sudo curl -fsSL ${installersLocation}/${installOption}_additional/facer-rgb_usrbin.sh -o /usr/bin/facer-rgb; sudo chmod +x /usr/bin/facer-rgb' \
                 '';;
@@ -32,7 +33,7 @@ aditionalInstructions()
                 '';;
         esac
         
-        if [ yesnoResult -eq 1 ]; then
+        if [ $yesnoResult -eq 1 ]; then
             echo -e "${GREEN}[*] ${NC}Custom option successfully aplied!"
         else
             echo -e "${BLUE}[*] ${NC}Skipping custom option"

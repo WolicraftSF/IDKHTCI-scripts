@@ -20,7 +20,12 @@ elif [ $argnum -eq 1 ]; then
             read -e option </dev/tty
             python /opt/turbo-fan/facer_rgb.py $option;;
         "--help"|"-h")
-            echo -e "Usage: facer-rgb [OPTIONS]\nChange keyboard color on Acer laptops.\n\n  Options:\n    --manual, -m  Use without an interface. Allows to save and load color profiles.\n    --help,   -h  Show this help message.";;
+            echo -e \
+            "Usage: facer-rgb [OPTIONS]\nChange keyboard color on Acer laptops.\n\
+            \n\
+              Options:\n\
+                --manual, -m  Use without an interface. Allows to save and load color profiles.\n\
+                --help,   -h  Show this help message.";;
         *)
             echo "Error: invalid argument.";;
     esac
