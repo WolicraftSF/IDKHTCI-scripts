@@ -19,16 +19,15 @@ aditionalInstructions()
     do
         case $i in
             1)
-                echo "yesno"
-                yesno '${BLUE}[&] ${NC}Make command "facer-rgb" available outside its directory? ${RED}[SUDO REQUIRED]' \
+                yesno '${BLUE}[\&] ${NC}Make command "facer-rgb" available outside its directory? ${RED}[SUDO REQUIRED]' \
                 'sudo curl -fsSL ${installersLocation}/${installOption}_additional/facer-rgb_usrbin.sh -o /usr/bin/facer-rgb; sudo chmod +x /usr/bin/facer-rgb' \
                 '';;
             2)
-                yesno '${BLUE}[&] ${NC}Apply fix on root home directory? ${GREEN}[Recommended: yes] ${RED}[SUDO REQUIRED]' \
+                yesno '${BLUE}[\&] ${NC}Apply fix on root home directory? ${GREEN}[Recommended: yes] ${RED}[SUDO REQUIRED]' \
                 'sudo rm -rf /root/.config/predator; sudo -E ln -s $HOME/.config/predator /root/.config/predator' \
                 '';;
             3)
-                yesno '${BLUE}[&] ${NC}Add rebuilder script to root directory[/]? ${RED}[SUDO REQUIRED]' \
+                yesno '${BLUE}[\&] ${NC}Add rebuilder script to root directory[/]? ${RED}[SUDO REQUIRED]' \
                 'sudo curl -fsSL ${installersLocation}/${installOption}_additional/rebuilder.sh -o /rebuild_acer-rgb.sh; sudo chmod +x /rebuild_acer-rgb.sh' \
                 '';;
         esac

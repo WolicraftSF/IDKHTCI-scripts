@@ -70,10 +70,11 @@ fi
 
 echo -e "${GREEN}[*] ${NC}Using ${BLUE}"$targetDir"${NC} for the download"
 targetDir=$targetDir/IDKHTCI-dl
+rm -rf $targetDir
 mkdir $targetDir
 cd $targetDir
 
-source <(curl -fsSL "${installersLocation}/${installOption}.sh")
+source /home/wolicraftsf/Projects/Standalone/IDKHTCI-scripts/installers/gamemode.sh #<(curl -fsSL "${installersLocation}/${installOption}.sh")
 
 echo -e "${GREEN}[*] ${BLUE}Downloading ${installOption}..."
 downloadInstructions
